@@ -13,3 +13,5 @@ router.get("/chart/:id", getChartData);
 router.post("/", validateUser, addUser);
 
 export default router;
+
+// buat atur user
