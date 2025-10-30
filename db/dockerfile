@@ -1,0 +1,21 @@
+FROM mysql:8.0
+
+# Copy initialization SQL files to init directory
+COPY *.sql /docker-entrypoint-initdb.d/
+
+# Optionally copy other files (e.g., for reference, but avoid cluttering init directory)
+# COPY *.txt /app/
+# COPY *.md /app/
+
+# Set environment variables for MariaDB
+ENV MYSQL_ROOT_PASSWORD=capstoneoye
+ENV MYSQL_DATABASE=student_learning_db
+# Optional: Add a non-root user if needed
+# ENV MYSQL_USER=quiz_user
+# ENV MYSQL_PASSWORD=secure_user_password
+
+# Expose MySQL port (optional, already in base image)
+EXPOSE 3306
+
+# Use the default entrypoint from the MariaDB image
+# No CMD needed, as the base image handles starting mysqld
