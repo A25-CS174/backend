@@ -31,9 +31,10 @@ USE `student_learning_db`;
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `city` VARCHAR(100) DEFAULT NULL,
+  `email` varchar(50) NOT NULL,
+  `password` varchar(60) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
@@ -88,6 +89,34 @@ CREATE TABLE `progress_history` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+-- Table structure for table `langganan`
+-- --------------------------------------------------------
+
+CREATE TABLE `langganan` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `title` VARCHAR(200) NOT NULL,
+  `deskripsi` TEXT,
+  `status` ENUM('aktif', 'tidak_aktif') NOT NULL DEFAULT 'tidak_aktif',
+  `valid_until` DATETIME DEFAULT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+-- Sample data
+-- --------------------------------------------------------
+
+INSERT INTO `users` (`name`, `city`, `email`, `password`)
+VALUES ('firda', 'Depok', 'firda@example.com', '$2a$10$dummyhash');
+
+INSERT INTO `langganan` (`user_id`, `title`, `deskripsi`, `status`, `valid_until`)
+VALUES (1, 'Paket Premium', 'Akses penuh semua modul selama 30 hari', 'aktif', DATE_ADD(NOW(), INTERVAL 30 DAY));
+
 
 -- --------------------------------------------------------
 
