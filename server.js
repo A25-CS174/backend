@@ -4,10 +4,8 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
 import progressRoutes from "./routes/progress.js";
 import userRoutes from "./routes/users.js";
-<<<<<<< HEAD
-=======
 import langgananRoutes from "./routes/langganan.js";
->>>>>>> bf24b3ea7fcbaff47c1419607bbf19d5d209c311
+import moduleRoutes from "./routes/modules.js";
 
 dotenv.config();
 const app = express();
@@ -20,10 +18,8 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/progress", progressRoutes);
-<<<<<<< HEAD
-=======
 app.use("/api/langganan", langgananRoutes);
->>>>>>> bf24b3ea7fcbaff47c1419607bbf19d5d209c311
+app.use("/api/modules", moduleRoutes);
 
 //root test
 app.get("/", (req, res) => {

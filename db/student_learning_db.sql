@@ -50,9 +50,48 @@ CREATE TABLE `users` (
 CREATE TABLE `modules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `order_sequence` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Table structure for table `chapters`
+--
+
+CREATE TABLE `chapters` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `module_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `order_sequence` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`module_id`) REFERENCES `modules`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Table structure for table `subchapters`
+--
+
+CREATE TABLE `subchapters` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `module_id` int(11) NOT NULL,
+  `chapter_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` longtext NOT NULL,
+  `content_html` longtext NOT NULL,
+  `content_css` text DEFAULT NULL,
+  `is_editable` boolean DEFAULT false,
+  `order_sequence` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`module_id`) REFERENCES `modules`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`chapter_id`) REFERENCES `chapters`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -90,6 +129,23 @@ CREATE TABLE `progress_history` (
   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Table structure for table `user_progress`
+--
+
+CREATE TABLE `user_progress` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `subchapter_id` int(11) NOT NULL,
+  `completed` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_subchapter_unique` (`user_id`, `subchapter_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`subchapter_id`) REFERENCES `subchapters` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
 -- Table structure for table `langganan`
 -- --------------------------------------------------------
@@ -124,11 +180,87 @@ VALUES (1, 'Paket Premium', 'Akses penuh semua modul selama 30 hari', 'aktif', D
 -- Sample Data for modules table
 --
 
-INSERT INTO `modules` (`title`) VALUES
-('Modul 1: Pengantar'),
-('Modul 2: Dasar-dasar'),
-('Modul 3: Intermediate'),
-('Modul 4: Advanced');
+INSERT INTO `modules` (`title`, `description`, `order_sequence`) VALUES
+('Pengenalan Web Development', 'Pelajari dasar-dasar pengembangan web dan teknologi yang digunakan.', 1),
+('HTML dan CSS Fundamental', 'Kuasai fundamental HTML5 dan CSS3 untuk membangun website.', 2),
+('JavaScript Dasar', 'Pelajari bahasa pemrograman JavaScript dan DOM manipulation.', 3),
+('Responsive Web Design', 'Buat website yang responsif untuk berbagai ukuran layar.', 4),
+('Web Performance & Optimization', 'Optimalkan performa website dan pengalaman pengguna.', 5),
+('Web Accessibility', 'Buat website yang dapat diakses oleh semua pengguna.', 6);
+
+--
+-- Sample Data for chapters table
+--
+
+INSERT INTO `chapters` (`module_id`, `title`, `description`, `order_sequence`) VALUES
+(1, 'Pengenalan Internet', 'Memahami cara kerja internet dan web', 1),
+(1, 'Web Browser dan Web Server', 'Mengenal komponen utama web', 2),
+(1, 'Tools Development', 'Persiapan alat pengembangan', 3),
+
+(2, 'Struktur Dasar HTML', 'Mempelajari struktur dan sintaks HTML', 1),
+(2, 'Semantic HTML', 'Penggunaan tag HTML yang bermakna', 2),
+(2, 'CSS Styling', 'Dasar-dasar styling dengan CSS', 3),
+
+(6, 'Pengantar Aksesibilitas', 'Memahami pentingnya aksesibilitas web', 1),
+(6, 'ARIA dan HTML Semantik', 'Implementasi ARIA dan HTML yang aksesibel', 2),
+(6, 'Pengujian Aksesibilitas', 'Cara menguji aksesibilitas website', 3);
+
+--
+-- Sample Data for subchapters table
+--
+
+INSERT INTO `subchapters` (`module_id`, `chapter_id`, `title`, `content`, `content_html`, `content_css`, `order_sequence`) VALUES
+(6, 7, 'Apa Itu Aksesibilitas', 'Aksesibilitas web adalah praktik membuat website yang dapat diakses oleh semua orang, termasuk penyandang disabilitas.', 
+'<div class="content">
+  <h1>Apa Itu Aksesibilitas Web?</h1>
+  <p>Aksesibilitas web mengacu pada praktik, pedoman, dan tools yang digunakan untuk membuat konten web dapat diakses oleh semua orang, termasuk:</p>
+  <ul>
+    <li>Penyandang tunanetra dan low vision</li>
+    <li>Penyandang tunarungu</li>
+    <li>Penyandang disabilitas motorik</li>
+    <li>Penyandang disabilitas kognitif</li>
+  </ul>
+</div>',
+'.content { padding: 20px; line-height: 1.6; }
+.content h1 { color: #2c3e50; margin-bottom: 20px; }
+.content ul { margin-left: 20px; }
+.content li { margin: 10px 0; }',
+1),
+
+(6, 7, 'Mengapa Aksesibilitas Penting', 'Pentingnya membuat web yang inklusif dan dapat diakses semua orang',
+'<div class="content">
+  <h2>Mengapa Aksesibilitas Web Penting?</h2>
+  <p>Ada beberapa alasan mengapa aksesibilitas web sangat penting:</p>
+  <ol>
+    <li>Kesetaraan akses informasi</li>
+    <li>Kepatuhan hukum</li>
+    <li>Manfaat bisnis</li>
+    <li>Pengalaman pengguna yang lebih baik</li>
+  </ol>
+</div>',
+'.content { padding: 20px; }
+.content h2 { color: #34495e; }
+.content ol { margin: 20px 0; }
+.content li { margin: 10px 0; }',
+2),
+
+(6, 8, 'Pengenalan ARIA', 'Accessible Rich Internet Applications dan implementasinya',
+'<div class="content">
+  <h2>Pengenalan ARIA (Accessible Rich Internet Applications)</h2>
+  <p>ARIA adalah spesifikasi teknis yang membantu membuat konten web dan aplikasi lebih aksesibel.</p>
+  <div class="code-example">
+    <pre><code>
+&lt;button aria-label="Close dialog" aria-expanded="false"&gt;
+  &lt;span class="icon"&gt;×&lt;/span&gt;
+&lt;/button&gt;
+    </code></pre>
+  </div>
+</div>',
+'.content { padding: 20px; }
+.code-example { background: #f8f9fa; padding: 15px; border-radius: 5px; }
+pre { margin: 0; }
+code { color: #e83e8c; }',
+1);
 
 COMMIT;
 

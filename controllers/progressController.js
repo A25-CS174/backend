@@ -1,13 +1,45 @@
 import db from "../config/db.js";
 
 /**
- * Helper: compute overall percentage = average of module.progress
+ * Helper: compute overall percentage = weighted average of module progress
  */
 function computeOverallFromRows(rows) {
   if (!rows.length) return 0;
   const sum = rows.reduce((acc, r) => acc + (r.progress || 0), 0);
   const avg = Math.round(sum / rows.length);
   return avg;
+}
+
+/**
+ * Helper: compute module progress based on chapter completion
+ */
+async function computeModuleProgress(moduleId, userId) {
+    const [chapters] = await db.query(
+        `SELECT c.id, 
+                IFNULL(
+                    (SELECT COUNT(*) 
+                     FROM subchapters s 
+                     WHERE s.chapter_id = c.id 
+                     AND s.id IN (
+                         SELECT subchapter_id 
+                         FROM user_progress 
+                         WHERE user_id = ? AND completed = 1
+                     )
+                    ) * 100.0 / 
+                    (SELECT COUNT(*) 
+                     FROM subchapters 
+                     WHERE chapter_id = c.id
+                    ),
+                0) as chapter_progress
+         FROM chapters c 
+         WHERE c.module_id = ?`,
+        [userId, moduleId]
+    );
+    
+    if (!chapters.length) return 0;
+    
+    const totalProgress = chapters.reduce((sum, chapter) => sum + chapter.chapter_progress, 0);
+    return Math.round(totalProgress / chapters.length);
 }
 
 /**
