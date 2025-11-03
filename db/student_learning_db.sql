@@ -263,7 +263,7 @@ code { color: #e83e8c; }',
 1);
 
 COMMIT;
-
+/*untuk module, chapter, dan subchapter sudah ditambahkan beserta relasinya. Progress tracking juga sudah disesuaikan dengan struktur baru ini.*/
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
