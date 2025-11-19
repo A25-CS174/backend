@@ -1,5 +1,6 @@
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 const db = mysql.createConnection({
@@ -9,9 +10,13 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME
 });
 
-db.connect(err => {
-  if (err) throw err;
-  console.log('MySQL Connected...');
+// Cek koneksi
+db.connect((err) => {
+  if (err) {
+    console.error("MySQL Connection Failed:", err);
+  } else {
+    console.log("MySQL Connected...");
+  }
 });
 
 export default db;
