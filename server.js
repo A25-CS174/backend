@@ -6,6 +6,7 @@ import progressRoutes from "./routes/progress.js";
 import userRoutes from "./routes/users.js";
 import langgananRoutes from "./routes/langganan.js";
 import moduleRoutes from "./routes/modules.js";
+import learningPathRoutes from "./routes/learningpath.js";
 
 dotenv.config();
 const app = express();
@@ -20,6 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/langganan", langgananRoutes);
 app.use("/api/modules", moduleRoutes);
+app.use("/api/learning-paths", learningPathRoutes);
 
 //root test
 app.get("/", (req, res) => {
