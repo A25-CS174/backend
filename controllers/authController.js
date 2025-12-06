@@ -39,7 +39,7 @@ export const register = (req, res) => {
                 );
 
                 db.query(
-                  "INSERT INTO langganan (user_id, title, deskripsi, status_aktif, valid_until) VALUES (?, ?, ?, ?, ?)",
+                  "INSERT INTO langganan (user_id, title, deskripsi, status, valid_until) VALUES (?, ?, ?, ?, ?)",
                   [userId, "Free Plan", "Akses dasar tanpa biaya", 1, null],
                   (err2) => {
                     if (err2) console.error("init langganan error", err2);
@@ -63,7 +63,7 @@ export const register = (req, res) => {
             );
 
             db.query(
-              "INSERT INTO langganan (user_id, title, deskripsi, status_aktif, valid_until) VALUES (?, ?, ?, ?, ?)",
+              "INSERT INTO langganan (user_id, title, deskripsi, status, valid_until) VALUES (?, ?, ?, ?, ?)",
               [userId, "Free Plan", "Akses dasar tanpa biaya", 1, null],
               (err2) => {
                 if (err2) console.error("init langganan error", err2);
