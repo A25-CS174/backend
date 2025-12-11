@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  db:
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+    build:
+      context: ../db
+      dockerfile: dockerfile
+    container_name: student_learning_db
+    image: student_learning
+    environment:
+      - MYSQL_DATABASE=student_learning_db
+      - MYSQL_ROOT_PASSWORD=mypassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ../db/student_learning_db.sql:/docker-entrypoint-initdb.d/student_learning_db.sql
+    networks:
+      - student_learning_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: student_learning_backend
+    image: student_learning_backend
+    env_file:
+      - ./.env
+    restart: always
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - student_learning_network
+
+volumes:
+  db_data:
+
+networks:
+  student_learning_network:
+    driver: bridge
