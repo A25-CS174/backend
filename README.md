@@ -75,7 +75,7 @@ All endpoints return JSON responses. Authentication is required for most endpoin
 
 ### Authentication
 - **POST /api/auth/register** - Register a new user
-  - Body: `{ "name": "string", "email": "string", "password": "string" }`
+  - Body: `{ "name": "string", "email": "string", "password": "string", "city": "string }`
 - **POST /api/auth/login** - Login user
   - Body: `{ "email": "string", "password": "string" }`
   - Response: `{ "token": "jwt_token", "user": {...} }`
