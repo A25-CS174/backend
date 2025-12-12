@@ -12,7 +12,10 @@ dotenv.config();
 const app = express();
 
 //middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "https://www.rakasatriaefendi.site",
+  credentials: true,
+}));
 app.use(express.json());
 
 //routes
