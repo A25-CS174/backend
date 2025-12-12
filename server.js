@@ -13,7 +13,7 @@ const app = express();
 
 //middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "https://www.rakasatriaefendi.site",
+  origin: process.env.FRONTEND_URL.split(","),
   credentials: true,
 }));
 app.use(express.json());
