@@ -4,7 +4,7 @@ import db from '../config/db.js';
 export const getUsers = (req, res) => {
     db.query('SELECT * FROM users', (err, results) => {
         if (err) {
-            console.error(err);
+            console.error("getUsers error", err);
             res.status(500).json({ error: 'Database query error' });
         } else {
             res.json(results);
