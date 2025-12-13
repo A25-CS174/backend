@@ -15,7 +15,7 @@ const db = mysql.createPool({
 });
 
 // Cek koneksi
-db.connect((err) => {
+db.getConnection((err, connection) => {
   if (err) {
     console.error("MySQL Pool Connection Failed:", err);
   } else {
